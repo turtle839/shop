@@ -1,0 +1,157 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Basic Coffee Shop</title>
+    <style>
+      /* Make product images bigger and keep aspect ratio */
+      #productsTable img {
+        width: 180px;   /* bigger images */
+        height: auto;
+        display: block;
+      }
+
+      /* small layout niceties so big images don't break table */
+      #productsTable td {
+        vertical-align: middle;
+      }
+
+      /* ensure cart table stays a fixed width */
+      #cartTable {
+        width: 260px;
+      }
+
+      /* main content area should leave room for the fixed cart */
+      #main {
+        margin-right: 300px; /* leave space so the cart doesn't overlap */
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body style="background-color:#67E2CC; ">
+
+    <div id="main" >
+      <h1>Coffee Shop</h1>
+
+      <p>Cart: <b id="cart">0</b> items</p>
+
+      <hr>
+      <h3>Products</h3>
+      <hr>
+
+      <!-- Product Table (normal flow, not fixed) -->
+      <table id="productsTable" border="3" cellspacing="1" cellpadding="10" style=" background:#EED675;  border: 2px solid black; border-radius: 10px;">
+        <tr>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Actions</th>
+        </tr>
+
+        <tr>
+          <td>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/A_small_cup_of_coffee.JPG" alt="Espresso" style="width:150px; border-radius:15px;">
+          </td>
+          <td>Espresso</td>
+          <td>₹120</td>
+          <td><button onclick="add('Espresso',120)">Add</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <img src="https://images.unsplash.com/photo-1525088553746-0c6e8f5872f1?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=4b38b9d5b55ae7892c5d6f8f5b9b8f97" alt="Cappuccino" style="width:150px; border-radius:15px;">
+          </td>
+          <td>Cappuccino</td>
+          <td>₹150</td>
+          <td><button onclick="add('Cappuccino',150)">Add</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=673e5b6d3f05d5d4c2e5f9a1b6b5adbd" alt="Latte" style="width:150px; border-radius:15px;">
+          </td>
+          <td>Latte</td>
+          <td>₹140</td>
+          <td><button onclick="add('Latte',140)">Add</button></td>
+        </tr>
+      </table>
+
+      <p>
+        <button onclick="addCoffee()">Add Coffee</button>
+      </p>
+    </div>
+
+    <!-- Cart Table on the right (fixed) -->
+    <table id="cartTable" border="3" cellspacing="1" cellpadding="10"
+           style="position:fixed; right:10px; top:20px; background:white; max-height:320px; overflow-y:auto; display:block; border: 2px solid black; border-radius: 10px;">
+      <tr>
+        <th>Item</th>
+        <th>Price</th>
+      </tr>
+      <tr id="totalRow">
+        <td><b>Total:</b></td>
+        <td><b id="total">₹0</b></td>
+      </tr>
+    </table>
+
+    <script>
+      var count = 0;
+      var total = 0;
+
+      function add(name, price) {
+        count++;
+        document.getElementById('cart').textContent = count;
+
+        var table = document.getElementById('cartTable');
+        var totalRow = document.getElementById('totalRow');
+
+        // insert new item row before total row
+        var row = table.insertRow(totalRow.rowIndex);
+        var c1 = row.insertCell(0);
+        var c2 = row.insertCell(1);
+        c1.textContent = name;
+        c2.textContent = '₹' + price;
+
+        total += Number(price);
+        document.getElementById('total').textContent = '₹' + total;
+      }
+
+      function addCoffee() {
+        var name = prompt("Enter coffee name:");
+        if (!name) return;
+
+        var price = prompt("Enter price (in ₹):");
+        if (!price || isNaN(price)) {
+          alert("Please enter a valid number for price.");
+          return;
+        }
+
+        var img = prompt("Enter image URL (optional):");
+        if (!img) {
+          img = "https://upload.wikimedia.org/wikipedia/commons/4/45/A_small_cup_of_coffee.JPG";
+        }
+
+        // create new product row
+        var table = document.getElementById('productsTable');
+        var row = table.insertRow();
+        var c1 = row.insertCell(0);
+        var c2 = row.insertCell(1);
+        var c3 = row.insertCell(2);
+        var c4 = row.insertCell(3);
+
+        // sanitize the img URL string (basic)
+        var safeImg = String(img).replace(/"/g,'');
+
+        c1.innerHTML = '<img src="' + safeImg + '" alt="' + name.replace(/"/g,'') + '">';
+        c2.textContent = name;
+        c3.textContent = '₹' + price;
+
+        var btn = document.createElement('button');
+        btn.textContent = 'Add';
+        btn.onclick = function() { add(name, Number(price)); };
+        c4.appendChild(btn);
+      }
+    </script>
+
+  </body>
+</html>
